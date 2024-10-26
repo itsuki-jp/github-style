@@ -1,12 +1,43 @@
-{{- $font := resources.Get "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Black.otf" }}
-{{- $images := partial "_funcs/get-page-images" . }}
-{{- with index $images 0 }}
-  {{- $img := . }}
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="{{ $img.Permalink }}">
-{{- else }}
-  <meta name="twitter:card" content="summary">
-{{- end }}
+{{ $font := "" }}
+{{ $path := "fonts/rounded-mgenplus-1c-bold.ttf" }}
+{{ with resources.Get $path }}
+  {{ with .Err }}
+    {{ errorf "%s" . }}
+  {{ else }}
+    {{ $font = . }}
+  {{ end }}
+{{ else }}
+  {{ errorf "Unable to get resource %q" $path }}
+{{ end }}
+
+{{ $opts := dict
+  "color" "#000000"
+  "font" $font
+  "linespacing" 8
+  "size" 60
+  "x" 50
+  "y" 35
+}}
+
+{{ $text := .Title | default "n_itsuki's blog" }} 
+
+{{- $maxLen := 16 }}
+{{- $len := strings.RuneCount $text -}}
+{{- $titleText := "" -}}
+{{- range $i := seq 0 (div $len $maxLen) }}
+  {{- $line := substr $text (mul $i $maxLen) $maxLen }}
+  {{- $titleText = printf "%s%s\n" $titleText $line }}
+{{- end -}}
+
+{{ $filter := images.Text $titleText $opts }}
+
+{{ with resources.Get "images/OGP_image.jpg" }}
+  {{ with . | images.Filter $filter }}
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ .RelPermalink }}">
+  {{ end }}
+{{ end }}
+
 
 {{- with or .Title site.Title site.Params.title | plainify }}
   <meta name="twitter:title" content="{{ . }}">
