@@ -6,11 +6,44 @@
 <link rel="canonical" href="{{ .Permalink }}" />
 
 <!-- Twitter Card -->
-{{ partial "twitter_cards.html" . }}
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="{{ if .IsHome }}{{ else }}{{ .Title }} - {{ end }}{{ .Site.Title }}" />
+<meta name="twitter:description"
+  content="{{ if .IsHome }}{{ $.Site.Params.description }}{{ else }}{{ .Summary | plainify }}{{ end }}" />
+<meta name="twitter:site" content="{{ $.Site.BaseURL }}" />
+<meta name="twitter:creator" content="{{ .Params.Author }}" />
+<!-- <meta name="twitter:image"
+  content="{{ if .IsHome }}{{ $.Site.Params.avatar | absURL }}{{ else }}{{ .Params.Cover | absURL }}{{ end }}"> -->
+{{- $font := resources.Get "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Black.otf" }}
+{{- $img := resources.Get "images/background_image.jpg" }}
+{{- $title := .Title }}
+{{- with $img }}
+  {{- $option := images.Text $title (dict "color" "#000000" "size" 30 "y" 120 "font" $font) }}
+  {{- $img = $img.Fill "600x315 Center"  | images.Filter $option }}
+  <meta property="twitter:image" content="{{ $img.RelPermalink | absURL }}">
+{{ end -}}
 
 
 <!-- OG data -->
-{{ partial "opengraph.html" . }}
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}" />
+<meta property="og:title" content="{{ if .IsHome }}{{ else }}{{ .Title }} - {{ end }}{{ .Site.Title }}">
+<meta property="og:description"
+  content="{{ if .IsHome }}{{ $.Site.Params.description }}{{ else }}{{ .Summary | plainify }}{{ end }}" />
+<meta property="og:url" content="{{ .Permalink }}" />
+<meta property="og:site_name" content="{{ .Title }}" />
+
+{{- $font := resources.Get "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Black.otf" }}
+{{- $img := resources.Get "images/background_image.jpg" }}
+{{- $title := .Title }}
+{{- with $img }}
+  {{- $option := images.Text $title (dict "color" "#000000" "size" 30 "y" 120 "font" $font) }}
+  {{- $img = $img.Fill "600x315 Center"  | images.Filter $option }}
+  <meta property="og:image" content="{{ $img.RelPermalink | absURL }}">
+{{ end -}}
+
+{{ if isset .Params "date" }}
+<meta property="article:published_time" content="{{ time .Date }}" />
+{{ end }}
 
 <!-- RSS -->
 {{ with .OutputFormats.Get "RSS" }}
