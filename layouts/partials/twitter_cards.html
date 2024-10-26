@@ -1,33 +1,12 @@
-{{ $font := "" }}
-{{ $path := "https://github.com/google/fonts/raw/main/ofl/lato/Lato-Regular.ttf" }}
-{{ with resources.GetRemote $path }}
-  {{ with .Err }}
-    {{ errorf "%s" . }}
-  {{ else }}
-    {{ $font = . }}
-  {{ end }}
-{{ else }}
-  {{ errorf "Unable to get resource %q" $path }}
-{{ end }}
-
-{{ $opts := dict
-  "color" "#fbfaf5"
-  "font" $font
-  "linespacing" 8
-  "size" 40
-}}
-
-{{ $text := "Zion National Park" }}
-{{ $filter := images.Text $text $opts }}
-
-<meta name="twitter:card" content="summary">
-{{ with resources.GetRemote "https://cdn.qiita.com/assets/qiita-ogp-3b6fcfdd74755a85107071ffc3155898.png" }}
-  {{ with . | images.Filter $filter }}
-    <meta name="twitter:image" content="{{ .RelPermalink }}">
-    <meta name="twitter:card" content="summary_large_image">
-  {{ end }}
-{{ end }}
-
+{{- $font := resources.Get "https://github.com/google/fonts/raw/main/ofl/notosansjp/NotoSansJP-Black.otf" }}
+{{- $images := partial "_funcs/get-page-images" . }}
+{{- with index $images 0 }}
+  {{- $img := . }}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{ $img.Permalink }}">
+{{- else }}
+  <meta name="twitter:card" content="summary">
+{{- end }}
 
 {{- with or .Title site.Title site.Params.title | plainify }}
   <meta name="twitter:title" content="{{ . }}">
