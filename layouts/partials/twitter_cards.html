@@ -1,6 +1,6 @@
 {{ $font := "" }}
-{{ $path := "https://github.com/google/fonts/raw/main/ofl/lato/Lato-Regular.ttf" }}
-{{ with resources.GetRemote $path }}
+{{ $path := "fonts/rounded-mgenplus-1c-bold.ttf" }}
+{{ with resources.Get $path }}
   {{ with .Err }}
     {{ errorf "%s" . }}
   {{ else }}
@@ -11,20 +11,22 @@
 {{ end }}
 
 {{ $opts := dict
-  "color" "#fbfaf5"
+  "color" "#000000"
   "font" $font
   "linespacing" 8
-  "size" 40
+  "size" 80
+  "x" 50
+  "y" 30
 }}
 
-{{ $text := "Zion National Park" }}
+{{ $text := .Title | default "Default Title" }} 
+
 {{ $filter := images.Text $text $opts }}
 
-<meta name="twitter:card" content="summary">
-{{ with resources.GetRemote "https://cdn.qiita.com/assets/qiita-ogp-3b6fcfdd74755a85107071ffc3155898.png" }}
+{{ with resources.Get "images/OGP_image.jpg" }}
   {{ with . | images.Filter $filter }}
-    <meta name="twitter:image" content="{{ .RelPermalink }}">
     <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="{{ .RelPermalink }}">
   {{ end }}
 {{ end }}
 
