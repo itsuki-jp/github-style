@@ -14,14 +14,22 @@
   "color" "#000000"
   "font" $font
   "linespacing" 8
-  "size" 80
+  "size" 60
   "x" 50
-  "y" 30
+  "y" 35
 }}
 
-{{ $text := .Title | default "Default Title" }} 
+{{ $text := .Title | default "n_itsuki's blog" }} 
 
-{{ $filter := images.Text $text $opts }}
+{{- $maxLen := 16 }}
+{{- $len := strings.RuneCount $text -}}
+{{- $titleText := "" -}}
+{{- range $i := seq 0 (div $len $maxLen) }}
+  {{- $line := substr $text (mul $i $maxLen) $maxLen }}
+  {{- $titleText = printf "%s%s\n" $titleText $line }}
+{{- end -}}
+
+{{ $filter := images.Text $titleText $opts }}
 
 {{ with resources.Get "images/OGP_image.jpg" }}
   {{ with . | images.Filter $filter }}
