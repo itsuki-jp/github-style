@@ -70,7 +70,7 @@
 
 {{ with resources.Get "images/OGP_image.jpg" }}
   {{ with . | images.Filter $filter }}
-    <meta property="og:image" content="{{ .RelPermalink }}">
+    <meta property="og:image" content="{{ .Permalink }}">
   {{ end }}
 {{ end }}
 

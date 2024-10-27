@@ -34,7 +34,7 @@
 {{ with resources.Get "images/OGP_image.jpg" }}
   {{ with . | images.Filter $filter }}
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="{{ .RelPermalink }}">
+    <meta name="twitter:image" content="{{ .Permalink }}">
   {{ end }}
 {{ end }}
 
