@@ -9,8 +9,6 @@
     <link rel="stylesheet" href='{{ "css/dark.css" | absURL }}' />
     <link rel="stylesheet" href='{{ "css/syntax.css" | absURL }}' />
     <script type="module" src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ionic/core/css/ionic.bundle.css" />
     <title>{{ if .IsHome }}{{ else }}{{ .Title }} - {{ end }}{{ .Site.Title }}</title>
     {{ if .Site.Params.favicon }}
     <link rel="icon" type="image/x-icon" href='{{ .Site.Params.favicon  }}'>
