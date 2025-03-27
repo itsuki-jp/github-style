@@ -1,16 +1,11 @@
+{{ $siteTitle := or site.Title site.Params.title | plainify }}
+{{ $pageTitle := or .Title $siteTitle | plainify }}
+{{ $description := or .Description .Summary site.Params.description | plainify | htmlUnescape }}
+
 <meta property="og:url" content="{{ .Permalink }}">
-
-{{- with or site.Title site.Params.title | plainify }}
-  <meta property="og:site_name" content="{{ . }}">
-{{- end }}
-
-{{- with or .Title site.Title site.Params.title | plainify }}
-  <meta property="og:title" content="{{ . }}">
-{{- end }}
-
-{{- with or .Description .Summary site.Params.description | plainify | htmlUnescape }}
-  <meta property="og:description" content="{{ trim . "\n\r\t " }}">
-{{- end }}
+<meta property="og:site_name" content="{{ $siteTitle }}">
+<meta property="og:title" content="{{ $pageTitle }}">
+<meta property="og:description" content="{{ trim $description "\n\r\t " }}">
 
 {{- with or .Params.locale site.Language.LanguageCode }}
   <meta property="og:locale" content="{{ replace . `-` `_` }}">
@@ -35,43 +30,11 @@
   <meta property="og:type" content="website">
 {{- end }}
 
-{{ $font := "" }}
-{{ $path := "fonts/rounded-mgenplus-1c-bold.ttf" }}
-{{ with resources.Get $path }}
-  {{ with .Err }}
-    {{ errorf "%s" . }}
-  {{ else }}
-    {{ $font = . }}
-  {{ end }}
-{{ else }}
-  {{ errorf "Unable to get resource %q" $path }}
-{{ end }}
+{{ $ogImagePath := "images/OGP_image.jpg" }}
+{{ $ogImage := resources.Get $ogImagePath }}
 
-{{ $opts := dict
-  "color" "#000000"
-  "font" $font
-  "linespacing" 8
-  "size" 60
-  "x" 50
-  "y" 35
-}}
-
-{{ $text := .Title | default "n_itsuki's blog" }} 
-
-{{- $maxLen := 16 }}
-{{- $len := strings.RuneCount $text -}}
-{{- $titleText := "" -}}
-{{- range $i := seq 0 (div $len $maxLen) }}
-  {{- $line := substr $text (mul $i $maxLen) $maxLen }}
-  {{- $titleText = printf "%s%s\n" $titleText $line }}
-{{- end -}}
-
-{{ $filter := images.Text $titleText $opts }}
-
-{{ with resources.Get "images/OGP_image.jpg" }}
-  {{ with . | images.Filter $filter }}
-    <meta property="og:image" content="{{ .Permalink }}">
-  {{ end }}
+{{ if $ogImage }}
+  <meta property="og:image" content="{{ $ogImage.Permalink }}">
 {{ end }}
 
 {{- with .Params.audio }}

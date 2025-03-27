@@ -1,13 +1,12 @@
-{{ $font := "" }}
-{{ $path := "fonts/rounded-mgenplus-1c-bold.ttf" }}
-{{ with resources.Get $path }}
-  {{ with .Err }}
-    {{ errorf "%s" . }}
-  {{ else }}
-    {{ $font = . }}
-  {{ end }}
-{{ else }}
-  {{ errorf "Unable to get resource %q" $path }}
+{{ $fontPath := "fonts/rounded-mgenplus-1c-bold.ttf" }}
+{{ $font := resources.Get $fontPath }}
+
+{{ if not $font }}
+  {{ $font = resources.FromFilename $fontPath }}
+{{ end }}
+
+{{ if not $font }}
+  {{ errorf "Unable to get font resource %q" $fontPath }}
 {{ end }}
 
 {{ $opts := dict
@@ -19,28 +18,25 @@
   "y" 35
 }}
 
-{{ $text := .Title | default "n_itsuki's blog" }} 
-
+{{ $text := .Title | default "n_itsuki's blog" }}
 {{- $maxLen := 16 }}
 {{- $len := strings.RuneCount $text -}}
 {{- $titleText := "" -}}
 {{- range $i := seq 0 (div $len $maxLen) }}
   {{- $line := substr $text (mul $i $maxLen) $maxLen }}
   {{- $titleText = printf "%s%s\n" $titleText $line }}
-{{- end -}}
+{{- end }}
 
 {{ $filter := images.Text $titleText $opts }}
-
 {{ with resources.Get "images/OGP_image.jpg" }}
   {{ with . | images.Filter $filter }}
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:image" content="{{ .Permalink }}">
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="{{ .Permalink }}" />
   {{ end }}
 {{ end }}
 
-
 {{- with or .Title site.Title site.Params.title | plainify }}
-  <meta name="twitter:title" content="{{ . }}">
+  <meta name="twitter:title" content="{{ . }}" />
 {{- end }}
 
 {{- with or .Description .Summary site.Params.description | plainify | htmlUnescape }}
@@ -55,7 +51,7 @@
       {{- if not (strings.HasPrefix . "@") }}
         {{- $content = printf "@%v" . }}
       {{- end }}
-      <meta name="twitter:site" content="{{ $content }}">
+      <meta name="twitter:site" content="{{ $content }}" />
     {{- end }}
   {{- end }}
 {{- end }}
