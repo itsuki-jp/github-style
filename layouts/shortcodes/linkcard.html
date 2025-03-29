@@ -47,18 +47,12 @@
         margin-bottom: 1em;
         border: solid 2px rgba(0, 0, 0, 0.15);
         border-radius: 5px;
-        color: #333;
-        background-color: #fff;
+        background-color: #333;
+        color: #ccc;
+        border-color: rgba(255, 255, 255, 0.15);
     }
 
-    @media (prefers-color-scheme: dark) {
-        .link-card {
-            border-color: rgba(255, 255, 255, 0.15);
-            color: #eee;
-            background-color: #2d2d2d;
-        }
-    }
-
+    /* ダークモードでもライトモードでも目に優しいデザイン */
     .link-card:hover {
         opacity: 0.6;
         transition: 0.1s;
@@ -98,6 +92,7 @@
         opacity: 0.8;
     }
 </style>
+
 
 <!-- HTMLを生成 -->
 <a href="{{- htmlUnescape $target_url -}}" style="text-decoration: none; color: inherit;">
